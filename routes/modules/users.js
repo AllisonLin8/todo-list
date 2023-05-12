@@ -10,7 +10,15 @@ router.get('/login', (req, res) => {
     res.render('login')
 })
 
-router.post('/login', passport.authenticate('local', {
+router.post('/login', (req, res, next) => {
+    const { email, password } = req.body
+    const errors = []
+    if (!email || !password) {
+        errors.push({ message: '請輸入Email和Password。' })
+        return res.render('login', { errors })
+    }
+    next()
+}, passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login'
 }))
